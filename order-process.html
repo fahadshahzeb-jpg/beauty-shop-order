@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UC Shop Order Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  :root {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --surface2: #F0EDE6;
+    --border: #E4E0D8;
+    --text: #1A1816;
+    --text2: #6B6660;
+    --text3: #9E9A95;
+    --accent: #C8622A;
+    --accent-light: #F5EDE7;
+    --accent-dark: #9E4A1C;
+    --spa: #2A6B8A;
+    --spa-light: #E7F1F5;
+    --salon: #6B4FA0;
+    --salon-light: #EEE9F7;
+    --skin: #3A8A5A;
+    --skin-light: #E7F3ED;
+    --riyadh: #C8622A;
+    --riyadh-light: #F5EDE7;
+    --other: #2A6B8A;
+    --other-light: #E7F1F5;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+ 
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+ 
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+ 
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+ 
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+  }
+ 
+  .logo-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+ 
+  .logo-sub {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 400;
+  }
+ 
+  .ai-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text2);
+    cursor: pointer;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--surface);
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+ 
+  .ai-toggle:hover { background: var(--surface2); }
+  .ai-toggle.active { background: var(--accent); color: white; border-color: var(--accent); }
+ 
+  .ai-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 2s infinite;
+  }
+ 
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+ 
+  .main {
+    display: flex;
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    gap: 0;
+    padding: 2rem;
+    gap: 1.5rem;
+  }
+ 
+  .guide-panel {
+    flex: 1;
+    min-width: 0;
+  }
+ 
+  .ai-panel {
+    width: 340px;
+    flex-shrink: 0;
+    display: none;
+  }
+ 
+  .ai-panel.visible { display: block; }
+ 
+  .ai-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: sticky;
+    top: 80px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 100px);
+  }
+ 
+  .ai-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+ 
+  .ai-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+ 
+  .ai-header-info { flex: 1; }
+  .ai-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .ai-status { font-size: 11px; color: var(--text3); }
+ 
+  .ai-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+ 
+  .msg {
+    max-width: 90%;
+    animation: fadeUp 0.3s ease;
+  }
+ 
+  @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+ 
+  .msg.ai { align-self: flex-start; }
+  .msg.user { align-self: flex-end; }
+ 
+  .msg-bubble {
+    padding: 10px 13px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+ 
+  .msg.ai .msg-bubble {
+    background: var(--surface2);
+    color: var(--text);
+    border-bottom-left-radius: 4px;
+  }
+ 
+  .msg.user .msg-bubble {
+    background: var(--accent);
+    color: white;
+    border-bottom-right-radius: 4px;
+  }
+ 
+  .msg-time { font-size: 10px; color: var(--text3); margin-top: 3px; padding: 0 4px; }
+  .msg.user .msg-time { text-align: right; }
+ 
+  .quick-chips {
+    padding: 8px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    border-top: 1px solid var(--border);
+  }
+ 
+  .chip {
+    font-size: 11px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    color: var(--text2);
+    background: var(--surface);
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+ 
+  .chip:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent-dark); }
+ 
+  .ai-input-row {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+ 
+  .ai-input {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--surface2);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+ 
+  .ai-input:focus { border-color: var(--accent); }
+ 
+  .send-btn {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 16px;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+ 
+  .send-btn:hover { background: var(--accent-dark); }
+ 
+  .typing-indicator {
+    display: none;
+    align-self: flex-start;
+  }
+ 
+  .typing-indicator.visible { display: flex; }
+ 
+  .typing-dots {
+    background: var(--surface2);
+    border-radius: 12px;
+    border-bottom-left-radius: 4px;
+    padding: 10px 14px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+ 
+  .typing-dots span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text3);
+    animation: bounce 1.2s infinite;
+  }
+ 
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+ 
+  .step { display: none; }
+  .step.active { display: block; }
+ 
+  .step-intro { margin-bottom: 1.75rem; }
+  .step-intro h2 { font-size: 24px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); margin-bottom: 6px; }
+  .step-intro p { font-size: 14px; color: var(--text2); }
+ 
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 1.5rem;
+  }
+ 
+  .cat-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+ 
+  .cat-card:hover { transform: translateY(-2px); border-color: var(--border); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .cat-card.spa:hover { border-color: var(--spa); }
+  .cat-card.salon:hover { border-color: var(--salon); }
+  .cat-card.skin:hover { border-color: var(--skin); }
+ 
+  .cat-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    margin: 0 auto 12px;
+  }
+ 
+  .cat-card.spa .cat-icon { background: var(--spa-light); color: var(--spa); }
+  .cat-card.salon .cat-icon { background: var(--salon-light); color: var(--salon); }
+  .cat-card.skin .cat-icon { background: var(--skin-light); color: var(--skin); }
+ 
+  .cat-label { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .cat-sub { font-size: 12px; color: var(--text3); }
+ 
+  .city-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 1.5rem; }
+ 
+  .city-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+ 
+  .city-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .city-card.riyadh:hover { border-color: var(--riyadh); }
+  .city-card.other:hover { border-color: var(--other); }
+ 
+  .city-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 10px;
+  }
+ 
+  .city-card.riyadh .city-icon { background: var(--riyadh-light); color: var(--riyadh); }
+  .city-card.other .city-icon { background: var(--other-light); color: var(--other); }
+ 
+  .city-label { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .city-sub { font-size: 12px; color: var(--text3); }
+ 
+  .type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+ 
+  .type-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+ 
+  .type-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .type-icon { font-size: 24px; margin-bottom: 8px; }
+  .type-label { font-size: 13px; font-weight: 600; color: var(--text); }
+ 
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text3);
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+ 
+  .bc-item {
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+ 
+  .bc-item:hover { border-color: var(--accent); color: var(--accent-dark); }
+  .bc-sep { color: var(--text3); font-size: 12px; }
+ 
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text2);
+    cursor: pointer;
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--surface);
+    margin-bottom: 1.25rem;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+ 
+  .back-btn:hover { background: var(--surface2); }
+ 
+  .items-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+ 
+  .items-title { font-size: 16px; font-weight: 600; color: var(--text); }
+ 
+  .search-input {
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--surface);
+    outline: none;
+    width: 200px;
+    transition: border-color 0.15s;
+  }
+ 
+  .search-input:focus { border-color: var(--accent); }
+ 
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+ 
+  table { width: 100%; border-collapse: collapse; }
+ 
+  thead th {
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--surface2);
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+ 
+  tbody td { padding: 11px 16px; font-size: 13px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--bg); }
+ 
+  .item-note { font-size: 11px; color: var(--text3); margin-top: 2px; font-style: italic; }
+ 
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    gap: 4px;
+    white-space: nowrap;
+  }
+ 
+  .badge-damaged { background: #EEF2FF; color: #3730A3; }
+  .badge-percent { background: #FEF3C7; color: #92400E; }
+  .badge-count { background: #FCE7F3; color: #9D174D; }
+  .badge-training { background: #F0FDF4; color: #166534; }
+  .badge-trainer { background: #F0F9FF; color: #075985; }
+  .badge-outofstock { background: #FFF7ED; color: #C2410C; }
+ 
+  .alert-box {
+    background: var(--accent-light);
+    border: 1px solid #E8C8B4;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--accent-dark);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+ 
+  .alert-icon { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
+ 
+  .count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface2);
+    color: var(--text2);
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 2px 8px;
+    margin-left: 6px;
+  }
+ 
+  .empty-state { text-align: center; padding: 2rem; color: var(--text3); font-size: 14px; }
+ 
+  @media (max-width: 768px) {
+    .main { flex-direction: column; padding: 1rem; }
+    .ai-panel { width: 100%; }
+    .ai-card { position: static; height: 400px; }
+    .cat-grid { grid-template-columns: 1fr; }
+    .city-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+ 
+<header>
+  <div class="logo">
+    <div class="logo-icon">🛍</div>
+    <div>
+      <div class="logo-text">UC Shop Order Guide</div>
+      <div class="logo-sub">Know exactly when to reorder</div>
+    </div>
+  </div>
+  <button class="ai-toggle" id="aiToggleBtn" onclick="toggleAI()">
+    <div class="ai-dot"></div>
+    Ask AI Assistant
+  </button>
+</header>
+ 
+<div class="main">
+ 
+  <div class="guide-panel">
+ 
+    <div id="step-cat" class="step active">
+      <div class="step-intro">
+        <h2>What's your service category?</h2>
+        <p>Select the category you work in to see relevant stock reorder rules.</p>
+      </div>
+      <div class="cat-grid">
+        <div class="cat-card spa" onclick="pickCat('spa')">
+          <div class="cat-icon">💆</div>
+          <div class="cat-label">Spa</div>
+          <div class="cat-sub">Massage & body treatments</div>
+        </div>
+        <div class="cat-card salon" onclick="pickCat('salon')">
+          <div class="cat-icon">💅</div>
+          <div class="cat-label">Salon / Nails</div>
+          <div class="cat-sub">Manicure, pedicure & nail art</div>
+        </div>
+        <div class="cat-card skin" onclick="pickCat('skin')">
+          <div class="cat-icon">✨</div>
+          <div class="cat-label">Skin</div>
+          <div class="cat-sub">Facial, waxing & threading</div>
+        </div>
+      </div>
+      <div class="alert-box">
+        <div class="alert-icon">⚠️</div>
+        <div>Always check remaining stock after every booking and keep items on your designated shelf. Pros who run out due to late ordering will face warnings and deductions.</div>
+      </div>
+    </div>
+ 
+    <div id="step-city" class="step">
+      <button class="back-btn" onclick="goTo('step-cat')">← Back</button>
+      <div class="breadcrumb">
+        <span class="bc-item" onclick="goTo('step-cat')" id="bc1-cat"></span>
+      </div>
+      <div class="step-intro">
+        <h2>Where are you based?</h2>
+        <p>Reorder thresholds differ between Riyadh and other cities.</p>
+      </div>
+      <div class="city-grid">
+        <div class="city-card riyadh" onclick="pickCity('riyadh')">
+          <div class="city-icon">🏙</div>
+          <div class="city-label">Riyadh</div>
+          <div class="city-sub">City Riyadh pros</div>
+        </div>
+        <div class="city-card other" onclick="pickCity('other')">
+          <div class="city-icon">📍</div>
+          <div class="city-label">Other cities</div>
+          <div class="city-sub">Jeddah & all other locations</div>
+        </div>
+      </div>
+    </div>
+ 
+    <div id="step-type" class="step">
+      <button class="back-btn" onclick="goTo('step-city')">← Back</button>
+      <div class="breadcrumb">
+        <span class="bc-item" onclick="goTo('step-cat')" id="bc2-cat"></span>
+        <span class="bc-sep">›</span>
+        <span class="bc-item" onclick="goTo('step-city')" id="bc2-city"></span>
+      </div>
+      <div class="step-intro">
+        <h2>What type of item?</h2>
+        <p>Choose the category of stock you want to check.</p>
+      </div>
+      <div class="type-grid" id="type-options"></div>
+    </div>
+ 
+    <div id="step-items" class="step">
+      <button class="back-btn" onclick="goTo('step-type')">← Back</button>
+      <div class="breadcrumb">
+        <span class="bc-item" onclick="goTo('step-cat')" id="bc3-cat"></span>
+        <span class="bc-sep">›</span>
+        <span class="bc-item" onclick="goTo('step-city')" id="bc3-city"></span>
+        <span class="bc-sep">›</span>
+        <span class="bc-item" id="bc3-type"></span>
+      </div>
+      <div class="items-header">
+        <div class="items-title" id="items-title">Items</div>
+        <input class="search-input" type="text" placeholder="Search items..." oninput="filterItems(this.value)" id="search-box">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:55%">Item name</th>
+              <th>When to reorder</th>
+            </tr>
+          </thead>
+          <tbody id="items-body"></tbody>
+        </table>
+      </div>
+      <div class="alert-box">
+        <div class="alert-icon">📦</div>
+        <div>Place your order while you still have sufficient stock until delivery. Never wait until you completely run out.</div>
+      </div>
+    </div>
+ 
+  </div>
+ 
+  <div class="ai-panel" id="aiPanel">
+    <div class="ai-card">
+      <div class="ai-header">
+        <div class="ai-avatar">AI</div>
+        <div class="ai-header-info">
+          <div class="ai-name">Stock Assistant</div>
+          <div class="ai-status">Ask me anything about ordering</div>
+        </div>
+      </div>
+      <div class="ai-messages" id="aiMessages">
+        <div class="msg ai">
+          <div class="msg-bubble">Hi! 👋 I'm your UC Shop assistant. Ask me anything about when to reorder items, city differences, or stock rules. Try something like "When should I reorder candles in Riyadh?"</div>
+          <div class="msg-time">Now</div>
+        </div>
+      </div>
+      <div class="typing-indicator" id="typingIndicator">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>
+      <div class="quick-chips" id="quickChips">
+        <span class="chip" onclick="sendChip(this.textContent)">When to reorder candles?</span>
+        <span class="chip" onclick="sendChip(this.textContent)">Riyadh vs other cities?</span>
+        <span class="chip" onclick="sendChip(this.textContent)">What are fixed items?</span>
+        <span class="chip" onclick="sendChip(this.textContent)">Consequences of late ordering?</span>
+      </div>
+      <div class="ai-input-row">
+        <input class="ai-input" id="aiInput" type="text" placeholder="Ask a question..." onkeydown="if(event.key==='Enter')sendMessage()">
+        <button class="send-btn" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+  </div>
+ 
+</div>
+ 
+<script>
+const state = { cat: '', city: '', type: '' };
+let allItems = [];
+ 
+const CAT_LABELS = { spa: 'Spa', salon: 'Salon / Nails', skin: 'Skin' };
+const CITY_LABELS = { riyadh: 'Riyadh', other: 'Other cities' };
+ 
+const TYPE_OPTIONS = {
+  spa: [
+    { key: 'fixed', icon: '🔧', label: 'Fixed items' },
+    { key: 'consumables', icon: '📦', label: 'Consumables' },
+    { key: 'upskilling', icon: '🎓', label: 'Upskilling tools' },
+  ],
+  salon: [
+    { key: 'fixed', icon: '🔧', label: 'Fixed items' },
+    { key: 'consumables', icon: '📦', label: 'Consumables' },
+  ],
+  skin: [
+    { key: 'fixed', icon: '🔧', label: 'Fixed items' },
+    { key: 'consumables', icon: '📦', label: 'Consumables' },
+  ]
+};
+ 
+const DATA = {
+  spa: {
+    fixed: { label: 'Fixed items', items: [
+      { name: 'Wheeled bag for bed', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Spa product bag pack', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Massage bed', riyadh: 'When damaged', other: 'When damaged' },
+      { name: '3-in-1 aroma diffuser', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Extension cord', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Spa tray', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Oil warmer', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Spa battery candle', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Screwdriver', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Spa name card', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Bed cover UC branded', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Spa branded towel', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Battery', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'UC branded floor sheet', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Foldable stool', riyadh: 'When damaged', other: 'When damaged' },
+    ]},
+    consumables: { label: 'Consumables', items: [
+      { name: 'Sanitizer', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Spa tissue', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Disposable face mask', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Candles', riyadh: '20 pcs left', other: '40 pcs left' },
+      { name: 'Spa disposable kit', riyadh: '20 pcs left', other: '40 pcs left' },
+      { name: 'Spa Soma TL oil', riyadh: '2 bottles left', other: '5 bottles left' },
+      { name: 'Spa Soma FL oil', riyadh: '2 bottles left', other: '5 bottles left' },
+      { name: 'Spa Soma E&S oil', riyadh: '2 bottles left', other: '5 bottles left' },
+      { name: 'Spa Soma CC oil', riyadh: '2 bottles left', other: '5 bottles left' },
+    ]},
+    upskilling: { label: 'Upskilling tools', items: [
+      { name: 'Hot stone set', note: 'Hot stone massage', riyadh: '1 day before training / When damaged', other: '1 day before training / When damaged' },
+      { name: 'Wooden tools', note: 'Anti-cellulite massage', riyadh: '1 day before training / When damaged', other: '1 day before training / When damaged' },
+      { name: 'Pregnancy pillow', note: 'Prenatal massage', riyadh: '1 day before training / When damaged', other: '1 day before training / When damaged' },
+      { name: 'Wooden bowl for body scrub', note: 'Body scrub massage', riyadh: '1 day before training / When damaged', other: '1 day before training / When damaged' },
+      { name: 'Spray bottle', note: 'Body scrub massage', riyadh: '1 day before training / When damaged', other: '1 day before training / When damaged' },
+      { name: 'Herbal ball machine', note: 'Thai herbal / Hot stone massage', riyadh: '1 day before training / When damaged', other: '1 day before training / When damaged' },
+      { name: 'Foam roller', note: 'Treatment program', riyadh: '1 day before training / When damaged', other: '1 day before training / When damaged' },
+      { name: 'Jojoba oil', note: 'Anti-cellulite / Prenatal massage', riyadh: '1 day before training / 4 bottles left', other: '1 day before training / 8 bottles left' },
+      { name: 'Thai massage herbal ball', note: 'Thai herbal massage', riyadh: '1 day before training / 2 pcs left', other: '1 day before training / 4 pcs left' },
+      { name: 'Berry body scrub', note: 'Body scrub massage', riyadh: '1 day before training / 1 bottle left', other: '1 day before training / 2 bottles left' },
+      { name: 'Milk body scrub', note: 'Body scrub massage', riyadh: '1 day before training / 1 bottle left', other: '1 day before training / 2 bottles left' },
+    ]}
+  },
+  salon: {
+    fixed: { label: 'Fixed items', items: [
+      { name: 'Nails product bag', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Nail polish bag', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Trolley product bag', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Back massagers', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Nail drill machine (rechargeable)', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Nail drill bit', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Callus remover machine', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Aroma diffuser 500ml', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Nails neck light', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Small stool', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Nail trimmer', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Wooden foldable stool', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Pedicure wooden bowl', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Tray', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Manicure wooden bowl', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Steel stool', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Empty nail polish bottle (refilling)', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Name card acrylic', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Beauty round leather rug', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Manicure pillow', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Nails card', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Beauty 3-pin adaptor', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Extension cord', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'UV lamp for gel polish', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Set of 3', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Spray bottle', riyadh: '1 pc left', other: '1 pc left' },
+      { name: 'Wooden spoons for nails', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Nipper', riyadh: '5 pcs left', other: '5 pcs left' },
+      { name: 'Foot file', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Pusher metal for callus', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Callus corn cutter', riyadh: 'When damaged', other: 'When damaged' },
+    ]},
+    consumables: { label: 'Consumables', items: [
+      { name: 'Express manicure disposable kit', riyadh: '15 pcs left', other: '30 pcs left' },
+      { name: 'Express pedicure disposable kit', riyadh: '15 pcs left', other: '30 pcs left' },
+      { name: 'Common disposable kit', riyadh: '20 pcs left', other: '40 pcs left' },
+      { name: 'Signature manicure disposable kit', riyadh: '3 pcs left', other: '5 pcs left' },
+      { name: 'Signature pedicure disposable kit', riyadh: '3 pcs left', other: '5 pcs left' },
+      { name: 'Classic manicure disposable kit', riyadh: '5 pcs left', other: '10 pcs left' },
+      { name: 'Classic pedicure disposable kit', riyadh: '5 pcs left', other: '10 pcs left' },
+      { name: 'Acetone', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Cuticle softener', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Sanitizer', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Cuticle oil', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Cling roll', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Tissue packet', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Callus remover chemical', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Disposable face mask', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Sanitized pouches for tools', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Disposable gloves', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Jayla body scrub', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Jayla body butter', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Jayla body oil', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Gel polish remover', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Zoya rejuvenator thinner', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Quick dry after polish', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Regular basecoat (all seasons)', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Regular topcoat (all seasons)', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Gel basecoat (all seasons)', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Gel topcoat (all seasons)', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Fluffy brush for cream mask', riyadh: '4 pcs left', other: '8 pcs left' },
+      { name: 'Polishes set', riyadh: 'Provided by trainer', other: 'Provided by trainer' },
+      { name: 'Nail art chrome set', riyadh: 'When out of stock', other: 'When out of stock' },
+      { name: 'Nail art ombre set', riyadh: 'When out of stock', other: 'When out of stock' },
+    ]}
+  },
+  skin: {
+    fixed: { label: 'Fixed items', items: [
+      { name: 'Bed bag for waxing/facial', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Product bag', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Trolley product bag', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Bed for waxing/facial', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Portable mirror', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Aroma diffuser 500ml', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Branded bed runner', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Beauty 3-pin adaptor', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Name card acrylic', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Spray bottle', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Tray', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Wooden foldable stool', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Extension cord', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Facial steamer', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Facial blackhead remover suction machine', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Small wooden bowl', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Rica roll-on heater', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Eyebrow brush', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Eyebrow tweezer', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Eyebrow scissor', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Waxing wax heater', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Mixing steel bowl', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Blackhead & blemish extractor', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Neck light', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Spatula machine — set of 3', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Gua sha stone', riyadh: 'When damaged', other: 'When damaged' },
+      { name: 'Gua sha roller', riyadh: 'When damaged', other: 'When damaged' },
+    ]},
+    consumables: { label: 'Consumables', items: [
+      { name: 'Mavex purifying cleansing gel', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Mavex exfoliating purifying mask', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Mavex purifying toner', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Mavex hydrating mat cream', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Mavex face pack 04', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Mavex skin detox cleanser', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Mavex skin detox cream', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Mavex cleansing milk', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Mavex exfoliating scrub', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Mavex professional lifting mask', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Mavex filler lifting serum', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Mavex intensive filler cream', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Mavex bakuchiol face oil', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Thalion radiance booster cream', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Thalion radiance cleansing milk', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Thalion brightening radiance lotion', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Thalion instant radiance scrub', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Thalion brightening algo plaste mask', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Cotton pad (120 pcs)', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Liposoluble honey wax', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Hard wax beads (underarm & face)', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Liposoluble banana wax', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Roll-on honey wax', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Thread roll', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Rose water', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Post-wax oil', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Aloe vera soothing gel', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Waxing wax strip', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Talcum powder', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Sanitized pouches for tools', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'Sanitizer alcohol', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Tissue box', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Disposable face mask', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Disposable gloves', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Disposable bed cover (with elastic)', riyadh: '20 pcs left', other: '40 pcs left' },
+      { name: 'Disposable towel medium', riyadh: '20 pcs left', other: '40 pcs left' },
+      { name: 'Disposable towel large', riyadh: '20 pcs left', other: '40 pcs left' },
+      { name: 'Robe', riyadh: '20 pcs left', other: '40 pcs left' },
+      { name: 'Facial sponge', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Facial beauty headband', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Fluffy brush for cream mask', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Shower cap (for steel bowl)', riyadh: '25% remaining', other: '50% remaining' },
+      { name: 'Waxing wooden spatulas', riyadh: '100 pcs left', other: '200 pcs left' },
+      { name: 'Bleaching set', riyadh: '10 pcs left', other: '20 pcs left' },
+    ]}
+  }
+};
+ 
+function show(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+ 
+function goTo(id) { show(id); }
+ 
+function pickCat(cat) {
+  state.cat = cat;
+  document.getElementById('bc1-cat').textContent = CAT_LABELS[cat];
+  document.getElementById('bc2-cat').textContent = CAT_LABELS[cat];
+  document.getElementById('bc3-cat').textContent = CAT_LABELS[cat];
+  show('step-city');
+}
+ 
+function pickCity(city) {
+  state.city = city;
+  document.getElementById('bc2-city').textContent = CITY_LABELS[city];
+  document.getElementById('bc3-city').textContent = CITY_LABELS[city];
+  const opts = TYPE_OPTIONS[state.cat];
+  const container = document.getElementById('type-options');
+  container.innerHTML = '';
+  opts.forEach(o => {
+    container.innerHTML += `<div class="type-card" onclick="pickType('${o.key}')"><div class="type-icon">${o.icon}</div><div class="type-label">${o.label}</div></div>`;
+  });
+  show('step-type');
+}
+ 
+function pickType(type) {
+  state.type = type;
+  const data = DATA[state.cat][type];
+  allItems = data.items;
+  document.getElementById('bc3-type').textContent = data.label;
+  document.getElementById('items-title').textContent = `${CAT_LABELS[state.cat]} — ${data.label} (${CITY_LABELS[state.city]})`;
+  document.getElementById('search-box').value = '';
+  renderItems(allItems);
+  show('step-items');
+}
+ 
+function getBadge(threshold) {
+  if (threshold.includes('damaged')) return ['badge-damaged', '🔧'];
+  if (threshold.includes('%')) return ['badge-percent', '📊'];
+  if (threshold.includes('training')) return ['badge-training', '🎓'];
+  if (threshold.includes('trainer')) return ['badge-trainer', '👩‍🏫'];
+  if (threshold.includes('stock')) return ['badge-outofstock', '🔄'];
+  return ['badge-count', '📦'];
+}
+ 
+function renderItems(items) {
+  const tbody = document.getElementById('items-body');
+  const cityKey = state.city;
+  if (items.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="2"><div class="empty-state">No items match your search.</div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = items.map(item => {
+    const threshold = item[cityKey];
+    const [cls, icon] = getBadge(threshold);
+    const note = item.note ? `<div class="item-note">${item.note}</div>` : '';
+    return `<tr><td>${item.name}${note}</td><td><span class="badge ${cls}">${icon} ${threshold}</span></td></tr>`;
+  }).join('');
+}
+ 
+function filterItems(q) {
+  const filtered = allItems.filter(i => i.name.toLowerCase().includes(q.toLowerCase()));
+  renderItems(filtered);
+}
+ 
+function toggleAI() {
+  const panel = document.getElementById('aiPanel');
+  const btn = document.getElementById('aiToggleBtn');
+  const visible = panel.classList.toggle('visible');
+  btn.classList.toggle('active', visible);
+  btn.innerHTML = visible
+    ? '<div class="ai-dot"></div> Close Assistant'
+    : '<div class="ai-dot"></div> Ask AI Assistant';
+}
+ 
+const SYSTEM_PROMPT = `You are a helpful stock management assistant for beauty professionals at UC (Urban Company) in Saudi Arabia. You have full knowledge of the UC Shop Order Process.
+ 
+Here is the complete data:
+ 
+SPA FIXED ITEMS: All reorder when damaged — Wheeled bag for bed, Spa product bag pack, Massage bed, 3-in-1 aroma diffuser, Extension cord, Spa tray, Oil warmer, Spa battery candle, Screwdriver, Spa name card, Bed cover UC branded, Spa branded towel, Battery, UC branded floor sheet, Foldable stool.
+ 
+SPA CONSUMABLES: Sanitizer, Spa tissue, Disposable face mask — Riyadh: 25% remaining, Other: 50% remaining. Candles, Spa disposable kit — Riyadh: 20 pcs left, Other: 40 pcs left. Spa Soma oils (TL, FL, E&S, CC) — Riyadh: 2 bottles left, Other: 5 bottles left.
+ 
+SPA UPSKILLING TOOLS: Hot stone set, Wooden tools, Pregnancy pillow, Wooden bowl for body scrub, Spray bottle, Herbal ball machine, Foam roller — Both cities: 1 day before training / When damaged. Jojoba oil — Riyadh: 1 day before training / 4 bottles left, Other: 8 bottles left. Thai massage herbal ball — Riyadh: 1 day before training / 2 pcs left, Other: 4 pcs left. Berry & Milk body scrub — Riyadh: 1 day before training / 1 bottle left, Other: 2 bottles left.
+ 
+SALON DISPOSABLE KITS: Express mani/pedi — Riyadh: 15 pcs, Other: 30 pcs. Common disposable kit — Riyadh: 20 pcs, Other: 40 pcs. Signature mani/pedi — Riyadh: 3 pcs, Other: 5 pcs. Classic mani/pedi — Riyadh: 5 pcs, Other: 10 pcs.
+ 
+SALON CONSUMABLES: Most items (Acetone, Cuticle softener, Sanitizer, Cuticle oil, Cling roll, Tissue, Callus remover, Face mask, Sanitized pouches, Gloves, Jayla products, Polish removers, basecoats, topcoats) — Riyadh: 25% remaining, Other: 50% remaining. Fluffy brush — Riyadh: 4 pcs, Other: 8 pcs. Polishes set — provided by trainer. Nail art chrome/ombre sets — when out of stock.
+ 
+SALON FIXED ITEMS: Most when damaged. Spray bottle — both: 1 pc left. Nipper — both: 5 pcs left.
+ 
+SKIN FIXED ITEMS: All when damaged (beds, bags, mirrors, steamer, blackhead machine, wax heater, eyebrow tools, gua sha tools, etc.)
+ 
+SKIN CONSUMABLES (Part 1 — Mavex and Thalion products, waxing supplies, thread, rose water, post-wax oil, aloe vera, wax strips, talcum, cotton pads): Both cities: 25% remaining.
+ 
+SKIN CONSUMABLES (Part 2): Sanitizer alcohol, Tissue box, Face mask, Gloves — Riyadh: 25%, Other: 50%. Disposable bed cover, Disposable towels, Robe — Riyadh: 20 pcs, Other: 40 pcs. Facial sponge, headband, fluffy brush, shower cap — Riyadh: 25%, Other: 50%. Waxing wooden spatulas — Riyadh: 100 pcs, Other: 200 pcs. Bleaching set — Riyadh: 10 pcs, Other: 20 pcs.
+ 
+KEY RULES:
+1. Always check stock after every booking.
+2. Keep items on your designated shelf.
+3. Order while you still have sufficient stock — never wait until empty.
+4. Pros who run out due to late ordering face warning letters and deductions.
+5. Missing stock deductions are based on item price.
+ 
+Be concise, warm, and helpful. Answer in 2-4 sentences max. If asked about a specific item, give the exact threshold for both Riyadh and other cities if relevant.`;
+ 
+async function callClaude(userMessage) {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: userMessage }]
+    })
+  });
+  const data = await response.json();
+  return data.content?.[0]?.text || 'Sorry, I could not get a response. Please try again.';
+}
+ 
+function addMessage(text, role) {
+  const messages = document.getElementById('aiMessages');
+  const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = `<div class="msg-bubble">${text.replace(/\n/g, '<br>')}</div><div class="msg-time">${now}</div>`;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+ 
+function showTyping(visible) {
+  const t = document.getElementById('typingIndicator');
+  t.classList.toggle('visible', visible);
+  const messages = document.getElementById('aiMessages');
+  messages.scrollTop = messages.scrollHeight;
+}
+ 
+async function sendMessage() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+ 
+  if (!document.getElementById('aiPanel').classList.contains('visible')) toggleAI();
+ 
+  addMessage(text, 'user');
+  showTyping(true);
+ 
+  try {
+    const reply = await callClaude(text);
+    showTyping(false);
+    addMessage(reply, 'ai');
+  } catch (e) {
+    showTyping(false);
+    addMessage('Sorry, something went wrong. Please check your connection and try again.', 'ai');
+  }
+}
+ 
+function sendChip(text) {
+  document.getElementById('aiInput').value = text;
+  sendMessage();
+}
+</script>
+</body>
+</html>
