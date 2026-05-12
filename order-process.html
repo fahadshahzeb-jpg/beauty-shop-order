@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UC Shop Order Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght=300;400;500;600&family=DM+Mono:wght=400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
  
@@ -26,6 +26,8 @@
     --salon-light: #EEE9F7;
     --skin: #3A8A5A;
     --skin-light: #E7F3ED;
+    --hair: #E05263;
+    --hair-light: #FDECEF;
     --riyadh: #C8622A;
     --riyadh-light: #F5EDE7;
     --other: #2A6B8A;
@@ -119,7 +121,6 @@
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
-    gap: 0;
     padding: 2rem;
     gap: 1.5rem;
   }
@@ -171,6 +172,60 @@
   .ai-header-info { flex: 1; }
   .ai-name { font-size: 13px; font-weight: 600; color: var(--text); }
   .ai-status { font-size: 11px; color: var(--text3); }
+
+  /* Audio Visualizer Waves styling */
+  .audio-wave {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 15px;
+    width: 25px;
+    margin-right: 8px;
+  }
+
+  .audio-bar {
+    width: 3px;
+    height: 3px;
+    background-color: var(--accent);
+    border-radius: 2px;
+    transition: height 0.15s ease;
+  }
+
+  .audio-wave.speaking .audio-bar {
+    animation: bounceBar 0.8s ease-in-out infinite alternate;
+  }
+
+  .audio-wave.speaking .audio-bar:nth-child(1) { animation-delay: 0.1s; }
+  .audio-wave.speaking .audio-bar:nth-child(2) { animation-delay: 0.3s; }
+  .audio-wave.speaking .audio-bar:nth-child(3) { animation-delay: 0s; }
+  .audio-wave.speaking .audio-bar:nth-child(4) { animation-delay: 0.4s; }
+
+  @keyframes bounceBar {
+    0% { height: 3px; }
+    100% { height: 15px; }
+  }
+
+  .voice-controls {
+    display: flex;
+    gap: 4px;
+  }
+
+  .voice-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+
+  .voice-btn:hover {
+    background: var(--surface);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
  
   .ai-messages {
     flex: 1;
@@ -301,16 +356,44 @@
   .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
   @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
  
-  .step { display: none; }
-  .step.active { display: block; }
+  /* Smooth App-Like View Transitions */
+  .step { display: none; opacity: 0; }
+  .step.active { 
+    display: block; 
+    animation: slideFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes slideFadeIn {
+    0% { opacity: 0; transform: translateX(15px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
  
   .step-intro { margin-bottom: 1.75rem; }
   .step-intro h2 { font-size: 24px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); margin-bottom: 6px; }
   .step-intro p { font-size: 14px; color: var(--text2); }
  
+  /* Progress Steps Indicators */
+  .step-progress {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-dot {
+    height: 4px;
+    flex: 1;
+    background: var(--border);
+    border-radius: 2px;
+    transition: background-color 0.3s;
+  }
+
+  .progress-dot.filled {
+    background: var(--accent);
+  }
+
   .cat-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 14px;
     margin-bottom: 1.5rem;
   }
@@ -326,9 +409,10 @@
   }
  
   .cat-card:hover { transform: translateY(-2px); border-color: var(--border); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-  .cat-card.spa:hover { border-color: var(--spa); }
-  .cat-card.salon:hover { border-color: var(--salon); }
-  .cat-card.skin:hover { border-color: var(--skin); }
+  .cat-card.spa:hover { border-color: var(--spa); box-shadow: 0 4px 16px rgba(42,107,138,0.15); }
+  .cat-card.salon:hover { border-color: var(--salon); box-shadow: 0 4px 16px rgba(107,79,160,0.15); }
+  .cat-card.skin:hover { border-color: var(--skin); box-shadow: 0 4px 16px rgba(58,138,90,0.15); }
+  .cat-card.hair:hover { border-color: var(--hair); box-shadow: 0 4px 16px rgba(224,82,99,0.15); }
  
   .cat-icon {
     width: 52px; height: 52px;
@@ -341,6 +425,7 @@
   .cat-card.spa .cat-icon { background: var(--spa-light); color: var(--spa); }
   .cat-card.salon .cat-icon { background: var(--salon-light); color: var(--salon); }
   .cat-card.skin .cat-icon { background: var(--skin-light); color: var(--skin); }
+  .cat-card.hair .cat-icon { background: var(--hair-light); color: var(--hair); }
  
   .cat-label { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
   .cat-sub { font-size: 12px; color: var(--text3); }
@@ -520,6 +605,17 @@
   }
  
   .alert-icon { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
+
+  /* Pulsing Highlight Animation for table rows active in chat queries */
+  @keyframes pulseHighlight {
+    0% { background-color: var(--surface); }
+    50% { background-color: rgba(200, 98, 42, 0.15); }
+    100% { background-color: var(--surface); }
+  }
+
+  tr.highlight-pulse td {
+    animation: pulseHighlight 1.5s ease-in-out infinite;
+  }
  
   .count-badge {
     display: inline-flex;
@@ -564,6 +660,13 @@
 <div class="main">
  
   <div class="guide-panel">
+
+    <div class="step-progress">
+      <div class="progress-dot filled" id="p-step1"></div>
+      <div class="progress-dot" id="p-step2"></div>
+      <div class="progress-dot" id="p-step3"></div>
+      <div class="progress-dot" id="p-step4"></div>
+    </div>
  
     <div id="step-cat" class="step active">
       <div class="step-intro">
@@ -574,17 +677,22 @@
         <div class="cat-card spa" onclick="pickCat('spa')">
           <div class="cat-icon">💆</div>
           <div class="cat-label">Spa</div>
-          <div class="cat-sub">Massage & body treatments</div>
+          <div class="cat-sub">Massage & treatments</div>
         </div>
         <div class="cat-card salon" onclick="pickCat('salon')">
           <div class="cat-icon">💅</div>
           <div class="cat-label">Salon / Nails</div>
-          <div class="cat-sub">Manicure, pedicure & nail art</div>
+          <div class="cat-sub">Manicure & pedicure</div>
         </div>
         <div class="cat-card skin" onclick="pickCat('skin')">
           <div class="cat-icon">✨</div>
           <div class="cat-label">Skin</div>
-          <div class="cat-sub">Facial, waxing & threading</div>
+          <div class="cat-sub">Facial & waxing</div>
+        </div>
+        <div class="cat-card hair" onclick="pickCat('hair')">
+          <div class="cat-icon">💇‍♀️</div>
+          <div class="cat-label">Hair</div>
+          <div class="cat-sub">Styling & cutting</div>
         </div>
       </div>
       <div style="margin-top: 2rem;">
@@ -637,9 +745,9 @@
     </div>
  
     <div id="step-city" class="step">
-      <button class="back-btn" onclick="goTo('step-cat')">← Back</button>
+      <button class="back-btn" onclick="goToStep('step-cat', 1)">← Back</button>
       <div class="breadcrumb">
-        <span class="bc-item" onclick="goTo('step-cat')" id="bc1-cat"></span>
+        <span class="bc-item" onclick="goToStep('step-cat', 1)" id="bc1-cat"></span>
       </div>
       <div class="step-intro">
         <h2>Where are you based?</h2>
@@ -660,11 +768,11 @@
     </div>
  
     <div id="step-type" class="step">
-      <button class="back-btn" onclick="goTo('step-city')">← Back</button>
+      <button class="back-btn" onclick="goToStep('step-city', 2)">← Back</button>
       <div class="breadcrumb">
-        <span class="bc-item" onclick="goTo('step-cat')" id="bc2-cat"></span>
+        <span class="bc-item" onclick="goToStep('step-cat', 1)" id="bc2-cat"></span>
         <span class="bc-sep">›</span>
-        <span class="bc-item" onclick="goTo('step-city')" id="bc2-city"></span>
+        <span class="bc-item" onclick="goToStep('step-city', 2)" id="bc2-city"></span>
       </div>
       <div class="step-intro">
         <h2>What type of item?</h2>
@@ -674,11 +782,11 @@
     </div>
  
     <div id="step-items" class="step">
-      <button class="back-btn" onclick="goTo('step-type')">← Back</button>
+      <button class="back-btn" onclick="goToStep('step-type', 3)">← Back</button>
       <div class="breadcrumb">
-        <span class="bc-item" onclick="goTo('step-cat')" id="bc3-cat"></span>
+        <span class="bc-item" onclick="goToStep('step-cat', 1)" id="bc3-cat"></span>
         <span class="bc-sep">›</span>
-        <span class="bc-item" onclick="goTo('step-city')" id="bc3-city"></span>
+        <span class="bc-item" onclick="goToStep('step-city', 2)" id="bc3-city"></span>
         <span class="bc-sep">›</span>
         <span class="bc-item" id="bc3-type"></span>
       </div>
@@ -713,6 +821,18 @@
           <div class="ai-name">Stock Assistant</div>
           <div class="ai-status">Ask me anything about ordering</div>
         </div>
+        
+        <div class="audio-wave" id="voiceWaveform">
+          <div class="audio-bar"></div>
+          <div class="audio-bar"></div>
+          <div class="audio-bar"></div>
+          <div class="audio-bar"></div>
+        </div>
+        <div class="voice-controls">
+          <button class="voice-btn" id="muteToggleBtn" onclick="toggleMute()" title="Mute/Unmute voice">🔊</button>
+          <button class="voice-btn" id="speedToggleBtn" onclick="cycleSpeed()" title="Speed rate">1.0x</button>
+        </div>
+
       </div>
       <div class="ai-messages" id="aiMessages">
         <div class="msg ai">
@@ -742,8 +862,9 @@
 const state = { cat: '', city: '', type: '' };
 let allItems = [];
 let isMuted = false;
+let currentSpeed = 1.0;
  
-const CAT_LABELS = { spa: 'Spa', salon: 'Salon / Nails', skin: 'Skin' };
+const CAT_LABELS = { spa: 'Spa', salon: 'Salon / Nails', skin: 'Skin', hair: 'Hair' };
 const CITY_LABELS = { riyadh: 'Riyadh', other: 'Other cities' };
  
 const TYPE_OPTIONS = {
@@ -757,6 +878,10 @@ const TYPE_OPTIONS = {
     { key: 'consumables', icon: '📦', label: 'Consumables' },
   ],
   skin: [
+    { key: 'fixed', icon: '🔧', label: 'Fixed items' },
+    { key: 'consumables', icon: '📦', label: 'Consumables' },
+  ],
+  hair: [
     { key: 'fixed', icon: '🔧', label: 'Fixed items' },
     { key: 'consumables', icon: '📦', label: 'Consumables' },
   ]
@@ -950,26 +1075,100 @@ const DATA = {
       { name: 'Waxing wooden spatulas', riyadh: '100 pcs left', other: '200 pcs left' },
       { name: 'Bleaching set', riyadh: '10 pcs left', other: '20 pcs left' },
     ]}
+  },
+  hair: {
+    fixed: { label: 'Fixed items', items: [
+      { name: 'HAIR Apron for hair pro', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'HAIR Spray bottle for water', riyadh: '1 pc remaining', other: '1 pc remaining' },
+      { name: 'HAIR Spray bottle for alcohol', riyadh: '1 pc remaining', other: '1 pc remaining' },
+      { name: 'HAIR Hair cape', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Haircutting shears', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Thinning shears', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Tail comb / rattail comb', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Wide-tooth comb', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Cutting comb', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Round brushes Size XS', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Round brushes Size S', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Round brushes Size M', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Round brushes Size L', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Round brushes Size XL', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Round brushes Size XXL', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Paddle brush', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Vent brush', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Tint Brush', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Plastic Mixing Bowl', riyadh: '2 pcs remaining', other: '2 pcs remaining' },
+      { name: 'HAIR Metal hairsectioning clips', riyadh: '20 pcs remaining', other: '20 pcs remaining' },
+      { name: 'HAIR Plastic hairsectioning clips', riyadh: '20 pcs remaining', other: '20 pcs remaining' },
+      { name: 'HAIR Hot rollers', riyadh: '20 pcs remaining', other: '20 pcs remaining' },
+      { name: 'HAIR Mirror', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'HAIR Tripod', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'HAIR Blow dryer', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'HAIR Hair straightener', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'HAIR Hair curler', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'HAIR Neck duster', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'HAIR Square rug for haircutting', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'Hair Uniform XS Top & Bottom', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'Hair Uniform S Top & Bottom', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'Hair Uniform M Top & Bottom', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'Hair Uniform L Top & Bottom', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'Hair Uniform XL Top & Bottom', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'Hair Uniform XXL Top & Bottom', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'Hair Uniform Branded TSHIRT XS', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'Hair Uniform Branded TSHIRT S', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'Hair Uniform Branded TSHIRT M', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'Hair Uniform Branded TSHIRT L', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'Hair Uniform Branded TSHIRT XL', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'Hair Uniform Branded TSHIRT XXL', riyadh: 'When product is damaged', other: 'When product is damaged' },
+      { name: 'HAIR Product Bag', riyadh: 'When product is damaged', other: 'When product is damaged' },
+    ]},
+    consumables: { label: 'Consumables', items: [
+      { name: 'HAIR Disposable gloves', riyadh: '20 pairs remaining', other: '20 pairs remaining' },
+      { name: 'HAIR Disposable salon cape', riyadh: '20 pcs remaining', other: '20 pcs remaining' },
+      { name: 'HAIR Disposable ear protector', riyadh: '20 pcs remaining', other: '20 pcs remaining' },
+      { name: 'HAIR Disposable neck roll', riyadh: '20 pcs remaining', other: '20 pcs remaining' },
+      { name: 'HAIR Tissue paper', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'HAIR Absolut Repair Oil', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'HAIR Vitamino Heat Protector', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'HAIR Volume Lift Spray Mousse Force 3', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'HAIR Elnett Hair Spray Extra Strong Hold', riyadh: '25% remaining', other: '25% remaining' },
+      { name: 'HAIR Elnett Hair Spray Strong Hold', riyadh: '25% remaining', other: '25% remaining' },
+    ]}
   }
 };
  
+function updateProgress(stepNum) {
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById(`p-step${i}`);
+    if (i <= stepNum) {
+      dot.classList.add('filled');
+    } else {
+      dot.classList.remove('filled');
+    }
+  }
+}
+
 function show(id) {
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
  
-function goTo(id) { show(id); }
+function goToStep(id, progressNum) { 
+  show(id); 
+  updateProgress(progressNum);
+}
  
 function pickCat(cat) {
   state.cat = cat;
+  localStorage.setItem('uc_cat', cat); // Save to Memory
   document.getElementById('bc1-cat').textContent = CAT_LABELS[cat];
   document.getElementById('bc2-cat').textContent = CAT_LABELS[cat];
   document.getElementById('bc3-cat').textContent = CAT_LABELS[cat];
-  show('step-city');
+  goToStep('step-city', 2);
 }
  
 function pickCity(city) {
   state.city = city;
+  localStorage.setItem('uc_city', city); // Save to Memory
   document.getElementById('bc2-city').textContent = CITY_LABELS[city];
   document.getElementById('bc3-city').textContent = CITY_LABELS[city];
   const opts = TYPE_OPTIONS[state.cat];
@@ -978,7 +1177,7 @@ function pickCity(city) {
   opts.forEach(o => {
     container.innerHTML += `<div class="type-card" onclick="pickType('${o.key}')"><div class="type-icon">${o.icon}</div><div class="type-label">${o.label}</div></div>`;
   });
-  show('step-type');
+  goToStep('step-type', 3);
 }
  
 function pickType(type) {
@@ -989,7 +1188,7 @@ function pickType(type) {
   document.getElementById('items-title').textContent = `${CAT_LABELS[state.cat]} — ${data.label} (${CITY_LABELS[state.city]})`;
   document.getElementById('search-box').value = '';
   renderItems(allItems);
-  show('step-items');
+  goToStep('step-items', 4);
 }
  
 function getBadge(threshold) {
@@ -1012,7 +1211,9 @@ function renderItems(items) {
     const threshold = item[cityKey];
     const [cls, icon] = getBadge(threshold);
     const note = item.note ? `<div class="item-note">${item.note}</div>` : '';
-    return `<tr><td>${item.name}${note}</td><td><span class="badge ${cls}">${icon} ${threshold}</span></td></tr>`;
+    // Format sanitized id tag for selective highlighting
+    const safeId = "row-" + item.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    return `<tr id="${safeId}"><td>${item.name}${note}</td><td><span class="badge ${cls}">${icon} ${threshold}</span></td></tr>`;
   }).join('');
 }
  
@@ -1031,23 +1232,85 @@ function toggleAI() {
     : '<div class="ai-dot"></div> Ask AI Assistant';
 }
  
-// --- VOICE UTTERANCE HANDLER ---
+// --- AUDIO WAVEFORM & AUDIO UTILITY HANDLER ---
+let waveInterval;
+
+function startWaveformAnimation() {
+  const waveform = document.getElementById('voiceWaveform');
+  waveform.classList.add('speaking');
+}
+
+function stopWaveformAnimation() {
+  const waveform = document.getElementById('voiceWaveform');
+  waveform.classList.remove('speaking');
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  const btn = document.getElementById('muteToggleBtn');
+  if (isMuted) {
+    btn.textContent = "🔇";
+    window.speechSynthesis.cancel();
+    stopWaveformAnimation();
+  } else {
+    btn.textContent = "🔊";
+  }
+}
+
+function cycleSpeed() {
+  const speeds = [1.0, 1.25, 1.5, 0.9];
+  let nextIdx = speeds.indexOf(currentSpeed) + 1;
+  if (nextIdx >= speeds.length) nextIdx = 0;
+  currentSpeed = speeds[nextIdx];
+  document.getElementById('speedToggleBtn').textContent = currentSpeed + "x";
+}
+
 function playVoiceover(text) {
   if (isMuted || !('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
+  
   const utterance = new SpeechSynthesisUtterance(text);
   const voices = window.speechSynthesis.getVoices();
   const standardVoice = voices.find(v => v.lang.startsWith('en'));
+  
   if (standardVoice) utterance.voice = standardVoice;
-  utterance.rate = 1.0;
-  utterance.pitch = 1.0;
+  utterance.rate = currentSpeed;
+  utterance.pitch = 1.05; // Slightly elevated warm pitch
+  
+  utterance.onstart = () => {
+    startWaveformAnimation();
+  };
+  
+  utterance.onend = () => {
+    stopWaveformAnimation();
+  };
+
+  utterance.onerror = () => {
+    stopWaveformAnimation();
+  };
+
   window.speechSynthesis.speak(utterance);
+}
+
+// Spark a visual row flash in the catalog tables to highlight spoken items
+function highlightRowMatching(keyword) {
+  // Map clean terms to CSS selectors
+  const rowId = "row-" + keyword.toLowerCase().replace(/[^a-z0-9]/g, '-');
+  const targetRow = document.getElementById(rowId);
+  if (targetRow) {
+    targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    targetRow.classList.add('highlight-pulse');
+    setTimeout(() => {
+      targetRow.classList.remove('highlight-pulse');
+    }, 4500); // Pulse for 4.5 seconds
+  }
 }
  
 // --- OFFLINE INTELLIGENT RULE ENGINE ---
 function localStockResponder(query) {
   const q = query.toLowerCase();
   if (q.includes('candle')) {
+    setTimeout(() => highlightRowMatching('Candles'), 500);
     return "Reorder candles when you have 20 pieces left in Riyadh, or 40 pieces left in other cities.";
   }
   if (q.includes('riyadh vs') || q.includes('other cities') || q.includes('different') || q.includes('difference')) {
@@ -1060,9 +1323,11 @@ function localStockResponder(query) {
     return "Running out of supplies leads to formal written warning letters accompanied by salary deductions, plus item recovery pricing charges.";
   }
   if (q.includes('sanitizer')) {
+    setTimeout(() => highlightRowMatching('Sanitizer'), 500);
     return "Reorder sanitizer at 25% remaining in Riyadh, or 50% remaining in other cities.";
   }
   if (q.includes('oil')) {
+    setTimeout(() => highlightRowMatching('Spa Soma TL oil'), 500);
     return "Spa Soma oils need reordering at 2 bottles remaining in Riyadh, or 5 bottles in other cities.";
   }
   return "Keep items organized on your designated stock shelf, review inventory after every booking, and always order before running empty.";
@@ -1142,6 +1407,37 @@ function sendChip(text) {
 if ('speechSynthesis' in window) {
   window.speechSynthesis.getVoices();
 }
+
+// --- STATE MEMORY INITIALIZATION ---
+window.addEventListener('DOMContentLoaded', () => {
+  const savedCat = localStorage.getItem('uc_cat');
+  const savedCity = localStorage.getItem('uc_city');
+
+  if (savedCat && savedCity && CAT_LABELS[savedCat] && CITY_LABELS[savedCity]) {
+    // Restore variables
+    state.cat = savedCat;
+    state.city = savedCity;
+
+    // Update Breadcrumbs
+    document.getElementById('bc1-cat').textContent = CAT_LABELS[savedCat];
+    document.getElementById('bc2-cat').textContent = CAT_LABELS[savedCat];
+    document.getElementById('bc3-cat').textContent = CAT_LABELS[savedCat];
+    document.getElementById('bc2-city').textContent = CITY_LABELS[savedCity];
+    document.getElementById('bc3-city').textContent = CITY_LABELS[savedCity];
+
+    // Build the Type options panel based on the saved category
+    const opts = TYPE_OPTIONS[state.cat];
+    const container = document.getElementById('type-options');
+    container.innerHTML = '';
+    opts.forEach(o => {
+      container.innerHTML += `<div class="type-card" onclick="pickType('${o.key}')"><div class="type-icon">${o.icon}</div><div class="type-label">${o.label}</div></div>`;
+    });
+
+    // Jump directly to Step 3 seamlessly
+    goToStep('step-type', 3);
+  }
+});
+
 </script>
 </body>
 </html>
